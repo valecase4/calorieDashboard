@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}
+    Dashboard
+{% endblock title %}
+{% block style %}
+    
+{% endblock style %}
+{% block content %}
+    <div class="content p-2 w-100 h-100" id="content">
+        <div class="row w-100 bold flex column">
+            <div class="w-4 flex o-center v-center b-bottom p-v-2">ID</div>
+            <div class="w-12 flex o-center v-center b-bottom p-v-2">Nome</div>
+            <div class="w-12 flex o-center v-center b-bottom p-v-2">Calorie</div>
+            <div class="w-12 flex o-center v-center b-bottom p-v-2">Proteine</div>
+            <div class="w-12 flex o-center v-center b-bottom p-v-2">Carboidrati</div>
+            <div class="w-12 flex o-center v-center b-bottom p-v-2">Zuccheri</div>
+            <div class="w-12 flex o-center v-center b-bottom p-v-2">Grassi</div>
+            <div class="w-12 flex o-center v-center b-bottom p-v-2">Grassi Saturi</div>
+            <div class="w-12 flex o-center v-center b-bottom p-v-2">Azioni</div>
+        </div>
+    </div>
+{% endblock content %}
+{% block script %}
+    <script src="{{ url_for('static', filename='javascript/food_list.js') }}"></script>
+{% endblock script %}

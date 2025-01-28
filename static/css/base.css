@@ -1,0 +1,273 @@
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Red Hat Display', serif;
+    overflow-x: hidden;
+}
+
+:root {
+    --primary-color: #074e6e;
+    --secondary-color: #1E81B0;
+}
+
+.wrapper {
+    width: 100%;
+    height: 100vh;
+    background-color: rgb(233, 233, 233);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* COLORS */
+
+/* USER SELECT */
+
+.us-none {
+    user-select: none;
+}
+
+/* FONT WEIGHT */
+
+.bold {
+    font-weight: bold;
+}
+
+/* BORDER RADIUS */
+
+.br-default {
+    border-radius: 0.75rem;
+}
+
+.br-circle {
+    border-radius: 99rem;
+}
+
+/* SIZES */
+/* WIDTH */
+
+.w-4 {
+    width: 4%;;
+}
+
+.w-12 {
+    width: 12%;
+}
+
+.w-33 {
+    width: 33%;
+}
+
+.w-50 {
+    width: 50%;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+/* HEIGHT */
+
+.h-10 {
+    height: 10%;
+}
+
+.h-11-6 {
+    height: 11.6%;
+}
+
+.h-16-6 {
+    height: 16.6%;
+}
+
+.h-20 {
+    height: 20%;
+}
+
+.h-30 {
+    height: 30%;
+}
+
+.h-50 {
+    height: 50%;
+}
+
+.h-90 {
+    height: 90%;
+}
+
+.h-100 {
+    height: 100%;
+}
+
+/* FONT SIZE */
+
+.font-1-half {
+    font-size: 1.5rem
+}
+
+.font-1-quarter {
+    font-size: 1.25rem;
+}
+
+.font-2 {
+    font-size: 2rem;
+}
+
+.font-2-half {
+    font-size: 2.5rem;
+}
+
+/* TEXT ALIGN */
+
+.text-left {
+    text-align: left;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* DISPLAY */
+
+.disp-none {
+    display: none;
+}
+
+/* FLEX */
+
+.flex {
+    display: flex;
+}
+
+.o-center {
+    justify-content: center;
+}
+
+.v-center {
+    align-items: center;
+}
+
+.column {
+    flex-direction: column;
+}
+
+.row {
+    flex-direction: row;
+}
+
+.space-between {
+    justify-content: space-between;
+}
+
+/* BORDERS */
+
+.b-none {
+    border: none;
+}
+
+.b-default {
+    border: 1px solid gray;
+}
+
+.b-top {
+    border: none;
+    border-top: 1px solid gray;
+}
+
+.b-bottom {
+    border: none;
+    border-bottom: 1px solid gray;
+}
+
+.b-right {
+    border: none;
+    border-right: 1px solid gray;
+}
+
+.b-left {
+    border: none;
+    border-left: 1px solid gray;
+}
+
+/* BACKGROUND */
+
+.bg-white {
+    background: white;
+}
+
+/* PADDINGS */
+
+.p-quarter {
+    padding: 0.25rem;
+}
+
+.p-half {
+    padding: 0.5rem;
+}
+
+.p-3-quarters {
+    padding: 0.75rem
+}
+
+.p-1 {
+    padding: 1rem;
+}
+
+.p-2 {
+    padding: 2rem;
+}
+
+.p-3 {
+    padding: 3rem;
+}
+
+.p-4 {
+    padding: 4rem;
+}
+
+.p-5 {
+    padding: 5rem;
+}
+
+.not-p-o {
+    padding-left: 0rem;
+    padding-right: 0rem;
+}
+
+.p-o-1 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.p-o-2 {
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+.p-v-1 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.p-v-2 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+/* Z-INDEX */
+
+.z-10 {
+    z-index: 10;
+}
+
+.z-20 {
+    z-index: 20;
+}
+
+.z-30 {
+    z-index: 30;
+}

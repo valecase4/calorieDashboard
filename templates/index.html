@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}
+    Homepage
+{% endblock title %}
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock style %}
+{% block content %}
+    <nav class="w-100 p-1 flex o-center v-center">
+        <ul class="us-none flex row">
+            <li class="bold font-1-quarter"><a href="{{ url_for('user_dashboard') }}">I Tuoi Dati</a></li>
+            <li class="bold font-1-quarter"><a href="{{ url_for('food_list') }}">Alimenti Salvati</a></li>
+        </ul>
+    </nav>
+
+    <!-- CONTENT -->
+
+    <div class="container w-100 h-100 flex o-center v-center column">
+        <div class="content p-2">
+            <div class="row flex row space-between">
+                <form action="/yesterday" method="POST">
+                    <input type="hidden" value="{{ date_obj }}" name="currentDate">
+                    <input type="submit" value="<" class="move-day-btn font-1-half br-circle b-none">
+                </form>
+                <span class="bold font-2-half us-none">{{ date_obj }}</span>
+                <form action="/tomorrow" method="POST">
+                    <input type="hidden" value="{{ date_obj }}" name="currentDate">
+                    <input type="submit" value=">" class="move-day-btn font-1-half br-circle b-none">
+                </form>
+            </div>
+            {% for meal in all_meals %}
+                <div class="row p-v-1">
+                    <div class="meal-name text-center font-2 bold w-100 p-quarter br-default">
+                        {{ meal[1] }}
+                    </div>
+                    <div class="not-p-o p-v-1 flex o-center v-center">
+                        <button class="br-circle b-none add-food-btn us-none" onclick="openForm('{{ meal[0] }}')">
+                            +
+                        </button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="form-container p-5 b-default flex column br-default z-20" id="formContainer">
+        <form action="" method="POST" id="newFoodForm">
+            <div class="form-row w-100 p-v-2 p-o-1 flex o-center v-center column">
+                <select class="b-bottom p-3-quarters us-none flex o-center v-center" name="mealNameInput" id="mealNameInput">
+                    <option value="1">Colazione</option>
+                    <option value="2">Pranzo</option>
+                    <option value="3">Cena</option>
+                    <option value="4">Spuntini</option>
+                </select>
+            </div>
+            <div class="form-row w-100 p-v-2 p-o-1 flex o-center v-center column">
+                <p class="bold">Inserisci il nome dell'alimento.</p>
+                <input class="b-bottom p-3-quarters us-none flex o-center v-center text-center" id="foodNameInput" type="text" autocomplete="off">
+                <div id="suggestions" class="disp-none"></div>
+            </div>
+            <div class="form-row w-100 p-v-2 p-o-1 flex o-center v-center column">
+                <p class="bold">Seleziona la quantità.</p>
+                <div class="flex o-center v-center w-100">
+                    <input class="b-bottom p-3-quarters us-none flex o-center v-center text-center" id="foodQuantityInput" type="number" min="0.1" step="0.1" value="1">
+                </div>
+            </div>
+            <div class="form-row w-100 p-v-2 p-o-1 flex o-center v-center column">
+                <input class="b-bottom p-3-quarters us-none flex o-center v-center text-center" type="submit" value="Salva" class="b-none us-none p-half br-default">
+            </div>
+        </form>
+    </div>
+
+    <!-- Background effect -->
+    <div class="w-100 h-100 z-10 disp-none" id="overlay"></div>
+{% endblock content %}
+{% block script %}
+    <script src="{{ url_for('static', filename='javascript/index.js') }}"></script>
+{% endblock script %}

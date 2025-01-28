@@ -1,0 +1,52 @@
+* {
+    user-select: none;
+}
+
+.row-div {
+    min-height: 50%;
+}
+
+.title {
+    background: var(--secondary-color);
+    color: white;
+}
+
+select {
+    height: 80%;
+    outline: none;
+    background: none;
+}
+
+.best-food-meal-item {
+    cursor: pointer;
+}
+
+.best-food-meal-item:hover {
+    background: var(--secondary-color);
+    color: white;
+    letter-spacing: 0.1rem
+}
+
+/* Letter Spacing 0.1rem */
+.lt-sp-0-1 {
+    letter-spacing: 0.1rem;
+}
+
+/* Container that shows specific details about a specific food */
+
+.food-details {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: white;
+    transform: translate(-50%, -50%);
+}
+
+/* BACKGROUND EFFECT */
+
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgb(0,0,0,0.5);
+} 

@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}
+    Dashboard
+{% endblock title %}
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user_dashboard.css') }}">
+{% endblock style %}
+{% block content %}
+    <!-- Container that shows specific details about a specific food -->
+    <div class="food-details w-50 p-4 br-default z-30 column disp-none" id="foodDetailsDiv">
+        <div class="w-100 p-1" id="foodDescription"></div>
+        <div class="w-100 p-1" id="foodContributionsCalories"></div>
+        <div class="w-100 p-1" id="foodContributions"></div>
+        <div class="w-100 p-1" id="howManyOccurrences"></div>
+    </div>
+
+    <!-- Container that shows specific details about a specific food related to week days trends -->
+    <div class="food-details w-50 p-4 br-default z-30 column disp-none" id="foodWeekDaysInsightsDiv">
+        <div class="w-100 p-1" id="twoBestWeekDays"></div>
+        <div class="w-100 p-1" id="mostPairedFood"></div>
+    </div>
+
+    <!-- Background effect -->
+    <div class="w-100 h-100 z-10 disp-none" id="overlay"></div>
+
+    <div class="container w-100 h-100 flex column">
+        <div class="row-div row w-100 h-50 flex">
+            <div class="w-33 h-100 p-1">
+                <div class="title w-100 h-10 b-none flex o-center v-center bold">
+                    I tuoi Alimenti Preferiti per Pasto
+                </div>
+                <div class="w-100 h-90 b-default">
+                    <div class="w-100 h-10 flex o-center v-center" style="background: white;">
+                        <select name="" class="b-none flex o-center v-center" id="bestFiveFoodsPerMealSelect">
+                            <option value="Colazione">Colazione</option>
+                            <option value="Pranzo">Pranzo</option>
+                            <option value="Cena">Cena</option>
+                            <option value="Spuntini">Spuntini</option>
+                        </select>
+                    </div>
+                    <div class="w-100 h-90" id="bestFiveFoodsPerMealDiv"></div>
+                </div>
+            </div>
+            <div class="w-33 h-100 p-1">
+                <div class="title w-100 h-10 b-none flex o-center v-center bold">
+                    I tuoi Macro per una Data Specifica
+                </div>
+                <div class="w-100 h-90 b-default">
+                    <div class="w-100 h-10 flex o-center v-center" style="background: white;">
+                        <input type="date" id="macrosDateInput" />
+                    </div>
+                    <div class="w-100 h-90" id="macrosPerDateDiv"></div>
+                </div>
+            </div>
+            <div class="w-33 h-100 p-1">
+                <div class="title w-100 h-10 b-none flex o-center v-center bold">
+                    Giorno della Settimana con più Calorie
+                </div>
+                <div class="w-100 h-90 b-default" id="orderedDaysByCalories">
+                    <div class="w-100 h-30 text-center flex v-center" id="bestDayByCalories"></div>
+                    <div class="w-100 h-11-6 b-top flex space-between p-o-1 v-center day-by-calories"></div>
+                    <div class="w-100 h-11-6 b-top flex space-between p-o-1 v-center day-by-calories"></div>
+                    <div class="w-100 h-11-6 b-top flex space-between p-o-1 v-center day-by-calories"></div>
+                    <div class="w-100 h-11-6 b-top flex space-between p-o-1 v-center day-by-calories"></div>
+                    <div class="w-100 h-11-6 b-top flex space-between p-o-1 v-center day-by-calories"></div>
+                    <div class="w-100 h-11-6 b-top flex space-between p-o-1 v-center day-by-calories"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row-div row w-100 h-50 flex">
+            <div class="w-33 h-100 p-1">
+                <div class="title w-100 h-10 b-none flex o-center v-center bold">
+                    I tuoi Alimenti Preferiti per Giorno
+                </div>
+                <div class="w-100 h-90 b-default">
+                    <div class="w-100 h-10 flex o-center v-center" style="background: white;">
+                        <select name="" class="b-none flex o-center v-center" id="bestFiveFoodsPerWeekDaySelect">
+                            <option value="Monday">Lunedì</option>
+                            <option value="Tuesday">Martedì</option>
+                            <option value="Wednesday">Mercoledì</option>
+                            <option value="Thursday">Giovedì</option>
+                            <option value="Friday">Venerdì</option>
+                            <option value="Saturday">Sabato</option>
+                            <option value="Sunday">Domenica</option>
+                        </select>
+                    </div>
+                    <div class="w-100 h-90" id="bestFiveFoodsPerWeekDay"></div>
+                </div>
+            </div>
+            <div class="w-33 h-100 p-1">
+                <div class="title w-100 h-10 b-none flex o-center v-center bold">
+                    Analisi dello 'Spread Calorico'
+                </div>
+                <div class="w-100 h-90 b-default flex column">
+                    <div class="w-100 flex o-center v-center b-bottom p-1" id="mostCaloricMeal"></div>
+                    <div class="w-100 flex column o-center p-1" id="otherCaloricMeals" style="flex: 1;"></div>
+                </div>
+            </div>
+            <div class="w-33 h-100"></div>
+        </div>
+        <div class="row-div row w-100 h-50 flex ">
+            <div class="w-33 h-100"></div>
+            <div class="w-33 h-100"></div>
+            <div class="w-33 h-100"></div>
+        </div>
+    </div>
+{% endblock content %}
+{% block script %}
+    <script src="{{ url_for('static', filename='javascript/user_dashboard.js') }}"></script>
+{% endblock script %}
