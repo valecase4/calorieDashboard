@@ -106,6 +106,29 @@ def create_meal_entries_table():
     conn.commit()
     cursor.close()
 
+def create_goals_table():
+    """
+    Create table that stores the user's goals
+    """
+    cursor = conn.cursor()
+
+    query = """
+    CREATE TABLE IF NOT EXISTS goals (
+        id SERIAL PRIMARY KEY,
+        type TEXT NOT NULL,                   
+        target_value FLOAT NOT NULL,          
+        tolerance_min FLOAT NOT NULL,         
+        tolerance_max FLOAT NOT NULL,         
+        rule TEXT NOT NULL,                  
+        priority INTEGER NOT NULL,            
+        description TEXT                      
+    );
+    """
+
+    cursor.execute(query)
+    conn.commit()
+    cursor.close()
+
 # --------------------------------------------------------------------------------------------------------------------
 
 def get_user_credentials():
@@ -640,5 +663,55 @@ class BackendDB:
         self.conn.commit()
         cursor.close()
         return results
+
+    def get_calories_last_seven_days(self):
+        """
+        Get the amount of calories for the last 7 days
+        """
+        cursor = self.conn.cursor()
+
+        query = """
+        SELECT 
+            me.date,
+            SUM(fv.calories * me.quantity / 100) AS total_calories
+        FROM 
+            meal_entries AS me
+        JOIN 
+            foods AS f ON me.food_id = f.id
+        JOIN 
+            food_values AS fv ON f.id = fv.food_id
+        GROUP BY 
+            me.date
+        ORDER BY me.date DESC 
+        LIMIT 7;
+        """
+
+        cursor.execute(query)
+        results = cursor.fetchall()
+        self.conn.commit()
+        cursor.close()
+        return results
+    
+    def get_most_important_goals(self):
+        """
+        Get the most important goals based on priority from 'goals' table 
+        """
+        cursor = self.conn.cursor()
+
+        query = """
+        SELECT *
+        FROM goals 
+        WHERE goals.priority >= ALL (
+            SELECT goals.priority
+            FROM goals
+        )
+        """
+
+        cursor.execute(query)
+        results = cursor.fetchall()
+        self.conn.commit()
+        cursor.close()
+        return results
+
 
     

@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, Response
 from db import BackendDB
 import json
+from datetime import datetime
 
 api_routes = Blueprint('api_routes', __name__, url_prefix='/api')
 backend_db = BackendDB("host='localhost' dbname='tracciamentoCalorie' user='postgres' password='root'")
@@ -179,3 +180,40 @@ def average_energy_spread():
     average_calories_spread = backend_db.get_energy_spread()
     average_calories_spread_dict = {i[0]: i[1] for i in average_calories_spread}
     return jsonify(average_calories_spread_dict)
+
+# Get total calories for the last 7 days
+@api_routes.route("/calories-trend-last-seven-days")
+def calories_trend_last_seven_days():
+    last_seven_days_calories = backend_db.get_calories_last_seven_days()
+    last_seven_days_calories_dict = {f"{i[0].strftime("%d-%m-%Y")}": round(i[1], 2) for i in last_seven_days_calories}
+    return jsonify(last_seven_days_calories_dict)
+
+@api_routes.route("/most-important-goals")
+def get_most_important_goals():
+    """
+    Get the most important goals based on priority from 'goals' table 
+    """
+    most_important_goals = backend_db.get_most_important_goals()
+    most_important_goals_list = []
+    for goal in most_important_goals:
+        print(goal)
+        if goal[5] == 'entro_range':
+            goal_dict = {
+                "macro": goal[1],
+                "valoreIdeale": goal[2],
+                "valoreMinimo": goal[2] + goal[3],
+                "valoreMassimo": goal[2] + goal[4],
+                "regola": "entro_range"
+            }
+            most_important_goals_list.append(goal_dict)
+        elif goal[5] == 'meglio_sopra':
+            goal_dict = {
+                "macro": goal[1],
+                "valoreIdeale": goal[2],
+                "valoreMinimo": goal[2],
+                "valoreMassimo": goal[4],
+                "regola": "meglio_sopra"
+            }
+            most_important_goals_list.append(goal_dict)
+    return jsonify(most_important_goals_list)
+    

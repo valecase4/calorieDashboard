@@ -5,7 +5,8 @@ from db import (
     create_foods_table, 
     create_meals_table,
     create_foods_values_table,
-    create_meal_entries_table
+    create_meal_entries_table,
+    create_goals_table
 )
 from db import BackendDB
 from dotenv import load_dotenv
@@ -95,4 +96,5 @@ if __name__ == '__main__':
     create_meals_table()
     create_foods_values_table()
     create_meal_entries_table()
+    create_goals_table()
     app.run(debug=True)

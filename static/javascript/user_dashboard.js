@@ -14,6 +14,7 @@ function closeOverlay() {
     overlay.classList.add("disp-none")
     foodDetailsDiv.classList.add("disp-none")
     foodWeekDaysInsightsDiv.classList.add("disp-none")
+    energySpreadPieChartDiv.classList.add("disp-none")
 }
 
 overlay.addEventListener("click", () => {
@@ -322,6 +323,87 @@ window.addEventListener("DOMContentLoaded", () => {
 // Section 5
 // Get and show how the calories are divided between the different meals on average (percentage)
 
+const showCalorieSpreadBtn = document.getElementById("showCalorieSpreadBtn")
+const energySpreadPieChartDiv = document.getElementById("energySpreadPieChartDiv")
+
+showCalorieSpreadBtn.addEventListener("click", () => {
+    overlay.classList.remove("disp-none")
+    energySpreadPieChartDiv.classList.remove("disp-none")
+
+    createCalorieSpreadPieChart()
+})
+
+// Plugin to draw labels on a pie chart
+const drawLabelsOnSlicesPlugin = {
+    id: 'drawLabelOnSlices',
+    afterDraw(chart) {
+        const {ctx} = chart;
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+            const meta = chart.getDatasetMeta(datasetIndex);
+            meta.data.forEach((slice, index) => {
+                const label = chart.data.labels[index]
+                const value = dataset.data[index]
+
+                const {x, y} = slice.tooltipPosition()
+
+                ctx.fillStyle = 'white'; 
+                ctx.font = '20px Red Hat Display';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fontWeight = 'bold'
+                ctx.fillText(`${label}`, x, y - 10);
+                ctx.fillText(`${value}`, x, y + 10); 
+            })
+        })
+    }
+}
+
+function createCalorieSpreadPieChart() {
+    fetch("http://127.0.0.1:5000/api/average-energy-spread")
+        .then(response => response.json())
+        .then(percentages => {
+            const ctx = document.getElementById("energySpreadPieChart").getContext('2d')
+
+            let myChart;
+
+            if (Chart.getChart(ctx)) {
+                Chart.getChart(ctx)?.destroy()
+            }
+
+            myChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(percentages),
+                    datasets: [{
+                        label: 'Percentuale',
+                        data: Object.values(percentages),
+                        backgroundColor: [
+                            '#074e6e',
+                            '#1E81B0',
+                            '#003366',
+                            '#99CCFF'
+                        ]
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: 'white',
+                                font: {
+                                    size: 20,
+                                    weight: 'bold'
+                                }
+                            }
+                        }
+                    }
+                },
+                plugins: [drawLabelsOnSlicesPlugin]
+            })
+        })
+}
+
 function getAverageEnergySpread() {
     fetch("http://127.0.0.1:5000/api/average-energy-spread")
         .then(response => response.json())
@@ -358,3 +440,91 @@ function getAverageEnergySpread() {
 }
 
 getAverageEnergySpread()
+
+// ---------------------------------------------------------------------------------------------------------------
+// Section 6
+// Calories Trend
+
+// Graph container (canvas)
+const caloriesTrendGraphs = document.getElementById("caloriesTrendGraphs").getContext('2d')
+
+function getCaloriesLastSevenDays() {
+    fetch("http://127.0.0.1:5000/api/calories-trend-last-seven-days")
+        .then(response => response.json())
+        .then(calorieData => 
+            {
+                const myChart = new Chart(caloriesTrendGraphs, {
+                    type: 'line',
+                    data: {
+                        labels: Object.keys(calorieData),
+                        datasets: [
+                            {
+                                data: Object.values(calorieData),
+                                label: 'Andamento Calorie',
+                                borderColor: '#074e6e',
+                                pointBackgroundColor: '#074e6e',
+                                tension: 0.2
+                            },
+                            {
+                                data: [3000, 3000, 3000, 3000, 3000, 3000, 3000],
+                                label: 'Fabbisogno Calorico Medio',
+                                borderColor: 'green',
+                                pointBackgroundColor: 'green',
+                                borderDash: [5, 5]
+                            }
+                        ]
+                    },
+                    options: {
+                        plugins: {
+                            legend: {
+                                display: true,
+                                labels: {
+                                    usePointStyle: true
+                                }
+                            }
+                        }
+                    }
+                })
+            }
+        )
+}
+
+getCaloriesLastSevenDays()
+
+// ---------------------------------------------------------------------------------------------------------------
+// Section 7
+
+// Goals section
+
+// Div that contains the goals description
+const goalDescriptionDiv = document.getElementById("goalDescriptionDiv")
+
+// API Call to get info about the set goals
+function getGoalDescription () {
+    fetch("http://127.0.0.1:5000/api/most-important-goals")
+        .then(response => response.json())
+        .then(data => {
+            // First paragraph
+            let goalDescriptionContent = `<p>I tuoi obbiettivi principali riguardano: <br><br></p>`
+
+            data.forEach(goal => {
+                const setGoalListItemContent = `
+                    &#x2022; &nbsp;<b>${goal.macro.toUpperCase()}</b>: Qui il valore ideale è stato fissato a <b>${goal.valoreIdeale}${goal.macro === 'calorie' ? 'kcal' : 'g'}</b> per giorno.
+                    ${
+                        goal.regola === 'entro_range' ? `Per questo macronutriente, il valore minimo da raggiungere è <b>${goal.valoreMinimo}${goal.macro === 'calorie' ? 'kcal' : 'g'}</b> per giorno.
+                        Il valore massimo, invece è stato settato a <b>${goal.valoreMassimo}${goal.macro === 'calorie' ? 'kcal' : 'g'}</b> per giorno.` 
+                        : `Ti sei prefissato di raggiungere da <b>${goal.valoreMinimo}${goal.macro === 'calorie' ? 'kcal' : 'g'}</b> per giorno in su.`
+                    }
+                    <br>
+                `
+                goalDescriptionContent = goalDescriptionContent + setGoalListItemContent
+            })
+
+            goalDescriptionDiv.innerHTML = goalDescriptionContent
+            goalDescriptionDiv.appendChild(setGoalsList)
+        })
+}
+
+// API Call
+getGoalDescription()
+

@@ -65,6 +65,10 @@
     width: 50%;
 }
 
+.w-66 {
+    width: 66%;
+}
+
 .w-100 {
     width: 100%;
 }
@@ -270,4 +274,10 @@
 
 .z-30 {
     z-index: 30;
+}
+
+/* MARGIN */
+
+.m-l-0-5 {
+    margin-left: 0.5rem;
 }

@@ -50,3 +50,9 @@ select {
     left: 0;
     background-color: rgb(0,0,0,0.5);
 } 
+
+/* Container that shows a pie chart graph related to the energy spread between the different meals */
+
+#energySpreadPieChartDiv {
+    background: none;
+}

@@ -20,6 +20,11 @@
         <div class="w-100 p-1" id="mostPairedFood"></div>
     </div>
 
+    <!-- Container that shows the calorie spread pie chart -->
+    <div class="food-details w-50 p-4 br-default z-30 column disp-none" id="energySpreadPieChartDiv">
+        <canvas id="energySpreadPieChart"></canvas>
+    </div>
+
     <!-- Background effect -->
     <div class="w-100 h-100 z-10 disp-none" id="overlay"></div>
 
@@ -89,22 +94,35 @@
             </div>
             <div class="w-33 h-100 p-1">
                 <div class="title w-100 h-10 b-none flex o-center v-center bold">
-                    Analisi dello 'Spread Calorico'
+                    Analisi dello 'Spread Calorico' <button class="m-l-0-5" id="showCalorieSpreadBtn">Vedi Grafico</button>
                 </div>
                 <div class="w-100 h-90 b-default flex column">
                     <div class="w-100 flex o-center v-center b-bottom p-1" id="mostCaloricMeal"></div>
                     <div class="w-100 flex column o-center p-1" id="otherCaloricMeals" style="flex: 1;"></div>
                 </div>
             </div>
-            <div class="w-33 h-100"></div>
+            <div class="w-33 h-100 p-1">
+                <div class="title w-100 h-10 b-none flex o-center v-center bold">
+                    Trend delle Calorie (Ultimi 7 giorni)
+                </div>
+                <div class="w-100 h-90 b-default flex v-center">
+                    <canvas id="caloriesTrendGraphs"></canvas>
+                </div>
+            </div>
         </div>
         <div class="row-div row w-100 h-50 flex ">
-            <div class="w-33 h-100"></div>
-            <div class="w-33 h-100"></div>
-            <div class="w-33 h-100"></div>
+            <div class="w-66 h-100 p-1">
+                <div class="title w-100 h-10 b-none flex o-center v-center bold">
+                    I tuoi Obbiettivi
+                </div>
+                <div class="w-100 h-90 b-default">
+                    <div class="w-100 b-bottom" id="goalDescriptionDiv"></div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock content %}
 {% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ url_for('static', filename='javascript/user_dashboard.js') }}"></script>
 {% endblock script %}
