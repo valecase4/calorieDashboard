@@ -25,6 +25,10 @@
         <canvas id="energySpreadPieChart"></canvas>
     </div>
 
+    <!-- Container that shows the trend related to the set goals -->
+    <div class="food-details w-50 p-4 br-default z-30 column disp-none" id="setGoalsInsightsDiv">
+    </div>
+
     <!-- Background effect -->
     <div class="w-100 h-100 z-10 disp-none" id="overlay"></div>
 
@@ -110,13 +114,38 @@
                 </div>
             </div>
         </div>
-        <div class="row-div row w-100 h-50 flex ">
+        <div class="row-div row w-100 flex ">
             <div class="w-66 h-100 p-1">
                 <div class="title w-100 h-10 b-none flex o-center v-center bold">
                     I tuoi Obbiettivi
                 </div>
-                <div class="w-100 h-90 b-default">
-                    <div class="w-100 b-bottom" id="goalDescriptionDiv"></div>
+                <div class="w-100 h-90 b-default flex column">
+                    <div class="w-100 b-bottom p-1" id="goalDescriptionDiv"></div>
+                    <button id="openSetGoalInsightsBtn">Clicca qui</button>
+                </div>
+            </div>
+            <div class="w-33 h-100 p-1">
+                <div class="title w-100 h-10 b-none flex o-center v-center bold">
+                    I Trend
+                </div>
+                <div class="w-100 h-90 b-default flex column">
+                    <div class="w-100 h-10 flex o-center v-center" style="background: white;">
+                        <select name="" class="b-none flex o-center v-center" id="nutrientToMakePlot">
+                            <option value="calorie">Calorie</option>
+                            <option value="proteine">Proteine</option>
+                            <option value="grassi">Grassi</option>
+                            <option value="zuccheri">Zuccheri</option>
+                            <option value="grassi_saturi">Grassi Saturi</option>
+                            <option value="carboidrati">Carboidrati</option>
+                        </select>
+                        <select class="b-none flex o-center v-center" id="intervalDaysToMakePlot">
+                            <option value="last_seven">Ultimi 7 giorni</option>
+                            <option value="last_thirty">Ultimi 30 giorni</option>
+                        </select>
+                    </div>
+                    <div class="w-100 h-90 flex v-center">
+                        <canvas id="globalTrendsGraph"></canvas>
+                    </div>
                 </div>
             </div>
         </div>

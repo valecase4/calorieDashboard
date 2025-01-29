@@ -713,5 +713,59 @@ class BackendDB:
         cursor.close()
         return results
 
+    def get_all_goals(self):
+        """
+        Get all goals from 'goals' table 
+        """
+        cursor = self.conn.cursor()
+
+        query = """
+        SELECT *
+        FROM goals 
+        """
+
+        cursor.execute(query)
+        results = cursor.fetchall()
+        self.conn.commit()
+        cursor.close()
+        return results
+    
+    def get_last_seven_dates(self):
+        """
+        Get the last seven days
+        """
+        cursor = self.conn.cursor()
+
+        query = """
+        SELECT DISTINCT(me.date)
+        FROM meal_entries AS me
+        ORDER BY me.date DESC
+        LIMIT 7
+        """
+
+        cursor.execute(query)
+        results = cursor.fetchall()
+        self.conn.commit()
+        cursor.close()
+        return results
+    
+    def get_last_thirty_dates(self):
+        """
+        Get the last thirty days
+        """
+        cursor = self.conn.cursor()
+
+        query = """
+        SELECT DISTINCT(me.date)
+        FROM meal_entries AS me
+        ORDER BY me.date DESC
+        LIMIT 30
+        """
+
+        cursor.execute(query)
+        results = cursor.fetchall()
+        self.conn.commit()
+        cursor.close()
+        return results
 
     

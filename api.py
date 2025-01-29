@@ -188,6 +188,7 @@ def calories_trend_last_seven_days():
     last_seven_days_calories_dict = {f"{i[0].strftime("%d-%m-%Y")}": round(i[1], 2) for i in last_seven_days_calories}
     return jsonify(last_seven_days_calories_dict)
 
+# Get the most important goals
 @api_routes.route("/most-important-goals")
 def get_most_important_goals():
     """
@@ -216,4 +217,51 @@ def get_most_important_goals():
             }
             most_important_goals_list.append(goal_dict)
     return jsonify(most_important_goals_list)
-    
+
+# Get all the goals
+@api_routes.route("/all-goals")
+def get_all_goals():
+    """
+    Get all goals from goals table
+    """
+    all_goals = backend_db.get_all_goals()
+    all_goals_list = []
+    for goal in all_goals:
+        print(goal)
+        if goal[5] == 'entro_range':
+            goal_dict = {
+                "macro": goal[1],
+                "valoreIdeale": goal[2],
+                "valoreMinimo": goal[2] + goal[3],
+                "valoreMassimo": goal[2] + goal[4],
+                "regola": "entro_range"
+            }
+            all_goals_list.append(goal_dict)
+        elif goal[5] == 'meglio_sopra':
+            goal_dict = {
+                "macro": goal[1],
+                "valoreIdeale": goal[2],
+                "valoreMinimo": goal[2],
+                "valoreMassimo": goal[4],
+                "regola": "meglio_sopra"
+            }
+            all_goals_list.append(goal_dict)
+    return jsonify(all_goals_list)
+
+# Return the last seven days (date format)
+@api_routes.route("/last-seven-dates")
+def last_seven_dates():
+    """
+    Return the last seven dates
+    """
+    dates = backend_db.get_last_seven_dates()
+    return jsonify(dates)
+
+# Return the last thirty days (date format)
+@api_routes.route("/last-thirty-dates")
+def last_thirty_dates():
+    """
+    Return the last thirty dates
+    """
+    dates = backend_db.get_last_thirty_dates()
+    return jsonify(dates)

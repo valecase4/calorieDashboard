@@ -15,6 +15,7 @@ function closeOverlay() {
     foodDetailsDiv.classList.add("disp-none")
     foodWeekDaysInsightsDiv.classList.add("disp-none")
     energySpreadPieChartDiv.classList.add("disp-none")
+    setGoalsInsightsDiv.classList.add("disp-none")
 }
 
 overlay.addEventListener("click", () => {
@@ -453,38 +454,57 @@ function getCaloriesLastSevenDays() {
         .then(response => response.json())
         .then(calorieData => 
             {
-                const myChart = new Chart(caloriesTrendGraphs, {
-                    type: 'line',
-                    data: {
-                        labels: Object.keys(calorieData),
-                        datasets: [
-                            {
-                                data: Object.values(calorieData),
-                                label: 'Andamento Calorie',
-                                borderColor: '#074e6e',
-                                pointBackgroundColor: '#074e6e',
-                                tension: 0.2
-                            },
-                            {
-                                data: [3000, 3000, 3000, 3000, 3000, 3000, 3000],
-                                label: 'Fabbisogno Calorico Medio',
-                                borderColor: 'green',
-                                pointBackgroundColor: 'green',
-                                borderDash: [5, 5]
+                const call = getAllGoals().then(
+                    goals => {
+                        goals.forEach(goal => {
+                            if (goal["macro"] == "calorie") {
+                                const caloriesGoalValue = goal.valoreIdeale
+
+                                const myChart = new Chart(caloriesTrendGraphs, {
+                                    type: 'line',
+                                    data: {
+                                        labels: Object.keys(calorieData),
+                                        datasets: [
+                                            {
+                                                data: Object.values(calorieData),
+                                                label: 'Andamento Calorie',
+                                                borderColor: '#074e6e',
+                                                pointBackgroundColor: '#074e6e',
+                                                tension: 0.2
+                                            },
+                                            {
+                                                data: Array(7).fill(caloriesGoalValue),
+                                                label: 'Fabbisogno Calorico Prefissato',
+                                                borderColor: 'green',
+                                                pointBackgroundColor: 'green',
+                                                borderDash: [5, 5]
+                                            }
+                                        ]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        scales: {
+                                            y: {
+                                                ticks: {
+                                                    min: 2000,
+                                                    max: 5000
+                                                }
+                                            }
+                                        },
+                                        plugins: {
+                                            legend: {
+                                                display: true,
+                                                labels: {
+                                                    usePointStyle: true
+                                                }
+                                            }
+                                        }
+                                    }
+                                })
                             }
-                        ]
-                    },
-                    options: {
-                        plugins: {
-                            legend: {
-                                display: true,
-                                labels: {
-                                    usePointStyle: true
-                                }
-                            }
-                        }
+                        })
                     }
-                })
+                )
             }
         )
 }
@@ -501,7 +521,7 @@ const goalDescriptionDiv = document.getElementById("goalDescriptionDiv")
 
 // API Call to get info about the set goals
 function getGoalDescription () {
-    fetch("http://127.0.0.1:5000/api/most-important-goals")
+    fetch("http://127.0.0.1:5000/api/all-goals")
         .then(response => response.json())
         .then(data => {
             // First paragraph
@@ -516,15 +536,291 @@ function getGoalDescription () {
                         : `Ti sei prefissato di raggiungere da <b>${goal.valoreMinimo}${goal.macro === 'calorie' ? 'kcal' : 'g'}</b> per giorno in su.`
                     }
                     <br>
+                    <br>
                 `
                 goalDescriptionContent = goalDescriptionContent + setGoalListItemContent
             })
 
+            // Last parragraph
+            const lastParagraphGoalDescription = '<p>Vediamo come ti sei comportato rispetto ai tuoi obbiettivi.</p>'
+            goalDescriptionContent = goalDescriptionContent + lastParagraphGoalDescription
+
             goalDescriptionDiv.innerHTML = goalDescriptionContent
-            goalDescriptionDiv.appendChild(setGoalsList)
         })
 }
 
 // API Call
 getGoalDescription()
 
+// Button that opens the div about goals insights if clicked
+const openSetGoalInsightsBtn = document.getElementById("openSetGoalInsightsBtn")
+// Container that shows info about goals
+const setGoalsInsightsDiv = document.getElementById("setGoalsInsightsDiv")
+
+openSetGoalInsightsBtn.addEventListener("click", () => {
+    setGoalsInsightsDiv.classList.remove("disp-none")
+    overlay.classList.remove("disp-none")
+})
+
+// ##################################################################################################################
+// Functions that computes goals insights
+
+// Function that finds 'perfect days', if they exists
+async function areTherePerfectDays() {
+    let perfectDays = [];
+    const formattedDates = await getLastSevenDays();
+
+    for (const date of formattedDates) {
+        let isPerfect = true;
+
+        const macros = await getMacrosByDate2(date); 
+        const goals = await getAllGoals();
+
+        for (const goal of goals) {
+            const macroName = goal.macro;
+            const macroValue = parseFloat(macros[macroName]);
+
+            if (goal.regola === "entro_range") {
+                if (macroValue > goal.valoreMassimo || macroValue < goal.valoreMinimo) {
+                    isPerfect = false;
+                    break; 
+                }
+            } else if (goal.regola === "meglio_sopra") {
+                if (macroValue < goal.valoreMinimo) {
+                    isPerfect = false;
+                    break; 
+                }
+            }
+        }
+
+        if (isPerfect) {
+            perfectDays.push(date);
+        }
+    }
+
+    return perfectDays;
+}
+
+// Function that finds perfect days about proteins, if they exist
+async function areTherePerfectDaysSpecific(macroNutrient) {
+    let perfectDays = [];
+    const formattedDates = await getLastSevenDays();
+
+    for (const date of formattedDates) {
+        let isPerfect = true;
+
+        const macros = await getMacrosByDate2(date); 
+        const goals = await getAllGoals();
+
+        for (const goal of goals) {
+            const macroName = goal.macro;
+            const macroValue = parseFloat(macros[macroName]);
+
+            if (macroName === macroNutrient) {
+                if (goal.regola === "entro_range") {
+                    if (macroValue > goal.valoreMassimo || macroValue < goal.valoreMinimo) {
+                        isPerfect = false;
+                        break; 
+                    }
+                } else if (goal.regola === "meglio_sopra") {
+                    if (macroValue < goal.valoreMinimo) {
+                        isPerfect = false;
+                        break; 
+                    }
+                }
+            }
+        }
+
+        if (isPerfect) {
+            perfectDays.push(date);
+        }
+    }
+
+    return perfectDays;
+}
+
+
+// Call Functions, get and display insights
+function displayInfo() {
+    let setGoalsInsightsDivContent = ''
+
+    // First paragraph 
+    areTherePerfectDays().then(
+        perfectDays => {
+            let firstParagraph;
+            const howManyPerfectDays = perfectDays.length
+
+            if (howManyPerfectDays === 0) {
+                firstParagraph = '<p>Negli ultimi 7 giorni, in <u>nessun giorno</u> sei stato in grado di raggiungere tutti i macro prefissati.</p><br><br>'
+            } else {
+                firstParagraph = `<p>Hai raggiunto tutti i macro prefissati per <b>${howManyPerfectDays} giorni</b> degli ultimi 7.</p><br><br>`
+            }
+
+            setGoalsInsightsDivContent = setGoalsInsightsDivContent + firstParagraph
+            setGoalsInsightsDiv.innerHTML = setGoalsInsightsDivContent
+        }
+        
+    )
+
+    const response = getAllGoals().then(goals => {
+        goals.forEach(goal => {
+            areTherePerfectDaysSpecific(goal.macro).then(
+                perfectDays => {
+                    let firstParagraph;
+                    const howManyPerfectDays = perfectDays.length
+
+                    if (howManyPerfectDays === 0) {
+                        firstParagraph = `<p>Negli ultimi 7 giorni, in <u>nessun giorno</u> sei stato in grado di rispettare il <b>fabbisogno di ${goal.macro}</b>.</p><br><br>`
+                    } else {
+                        firstParagraph = `<p>Hai rispettato il <b>fabbisogno di ${goal.macro}</b> per <b>${howManyPerfectDays} giorni</b> degli ultimi 7.</p><br><br>`
+                    }
+
+                    setGoalsInsightsDivContent = setGoalsInsightsDivContent + firstParagraph
+                    setGoalsInsightsDiv.innerHTML = setGoalsInsightsDivContent
+                }
+            )
+        })
+    })
+}
+
+displayInfo()
+
+
+// Function that gets the last seven days in YYYY-MM-DD format
+async function getLastSevenDays() {
+    const response = await fetch("http://127.0.0.1:5000/api/last-seven-dates");
+    const data = await response.json();
+    const formattedDates = data.map(dateStr => {
+        const date = new Date(dateStr);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); 
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    });
+    return formattedDates;
+}
+
+// Function that gets total macros for a specific date
+async function getMacrosByDate2(date) {
+    const response = await fetch(`http://127.0.0.1:5000/api/total-macros-per-date/${date}`)
+    const data = await response.json()
+    return data
+}
+
+// Function that gets all goals 
+async function getAllGoals() {
+    const response = await fetch("http://127.0.0.1:5000/api/all-goals")
+    const data = await response.json()
+    return data
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Global Trends and Graphs
+
+// Nutrient input
+const nutrientToMakePlot = document.getElementById("nutrientToMakePlot")
+
+// Interval Days input
+const intervalDaysToMakePlot = document.getElementById("intervalDaysToMakePlot")
+
+async function graphBasedOnInput() {
+    const nutrientValue = nutrientToMakePlot.value 
+    const intervalDaysValue = intervalDaysToMakePlot.value 
+
+    let values = {}
+
+    if (intervalDaysValue == 'last_seven') {
+        const lastSevenDays = await getLastSevenDays() 
+        
+        for (const date of lastSevenDays) {
+            const macros = await getMacrosByDate2(date)
+            values[date] = macros[nutrientValue]
+        }
+    } else if (intervalDaysValue == 'last_thirty') {
+        console.log("Ultimi 30 giorni")
+        const lastThirtyDays = await getLastThirtyDays() 
+        
+        for (const date of lastThirtyDays) {
+            const macros = await getMacrosByDate2(date)
+            values[date] = macros[nutrientValue]
+        }
+    }
+
+    return values
+}
+
+nutrientToMakePlot.addEventListener("input", async () => {
+    const output = await graphBasedOnInput()   
+    displayGraph(output)
+})
+
+intervalDaysToMakePlot.addEventListener("input", async () => {
+    const output = await graphBasedOnInput() 
+    displayGraph(output)   
+})
+
+// Function to display graph 
+function displayGraph(output) {
+    const sortedKeys = Object.keys(output).sort((a, b) => new Date(a) - new Date(b));
+
+    const sortedDataObject = {};
+    
+    sortedKeys.forEach(key => {
+        sortedDataObject[key] = output[key];
+    });
+
+    const globalTrendsGraph = document.getElementById("globalTrendsGraph").getContext('2d')
+
+    if (Chart.getChart(globalTrendsGraph)) {
+        Chart.getChart(globalTrendsGraph)?.destroy()
+    }
+    
+    const myChart = new Chart(globalTrendsGraph, {
+        type: 'line',
+        data: {
+            labels: Object.keys(sortedDataObject),
+            datasets: [
+                {
+                    data: Object.values(sortedDataObject),
+                    label: `Andamento ${nutrientToMakePlot.value}`,
+                    borderColor: '#074e6e',
+                    pointBackgroundColor: '#074e6e',
+                    tension: 0.2
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    ticks: {
+                        min: 2000,
+                        max: 5000
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        usePointStyle: true
+                    }
+                }
+            }
+        }
+    })
+}
+
+// Function that gets the last thirty days
+async function getLastThirtyDays() {
+    const response = await fetch("http://127.0.0.1:5000/api/last-thirty-dates");
+    const data = await response.json();
+    const formattedDates = data.map(dateStr => {
+        const date = new Date(dateStr);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); 
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    });
+    return formattedDates;
+}
