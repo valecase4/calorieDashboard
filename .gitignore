@@ -13,3 +13,5 @@ __pycache__/
 *.cfg
 
 .git/
+
+queries/
