@@ -1,1 +1,15 @@
 # Created by venv; see https://docs.python.org/3/library/venv.html
+
+queries/
+
+Scripts/
+Lib/
+Include/
+__pycache__/
+
+
+*.env
+
+*.cfg
+
+.git/
