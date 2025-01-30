@@ -38,6 +38,22 @@
                             +
                         </button>
                     </div>
+                    {% for meal_entry in all_meal_entries_for_current_date %}
+                        {% if meal_entry[2] == meal[0] %}
+                        <div class="w-100 flex row">
+                            <div class="w-90 flex o-center v-center p-1 font-1-quarter">
+                                <div class="w-50 text-right">{{ meal_entry[0] }}</div>
+                                <div class="w-50 text-left p-o-8">{{ meal_entry[1] }} grammi</div>
+                            </div>
+                            <div class="w-10 flex o-center v-center p-1">
+                                <form action="/delete-meal-entry/{{ meal_entry[4] }}" method="POST">
+                                    <input type="hidden" value="{{ meal_entry[4] }}">
+                                    <input type="submit" value="D" class="delete-btn p-1 b-none br-default">
+                                </form>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
             {% endfor %}
         </div>
@@ -55,13 +71,13 @@
             </div>
             <div class="form-row w-100 p-v-2 p-o-1 flex o-center v-center column">
                 <p class="bold">Inserisci il nome dell'alimento.</p>
-                <input class="b-bottom p-3-quarters us-none flex o-center v-center text-center" id="foodNameInput" type="text" autocomplete="off">
+                <input class="b-bottom p-3-quarters us-none flex o-center v-center text-center" name="foodNameInput" id="foodNameInput" type="text" autocomplete="off">
                 <div id="suggestions" class="disp-none"></div>
             </div>
             <div class="form-row w-100 p-v-2 p-o-1 flex o-center v-center column">
                 <p class="bold">Seleziona la quantità.</p>
                 <div class="flex o-center v-center w-100">
-                    <input class="b-bottom p-3-quarters us-none flex o-center v-center text-center" id="foodQuantityInput" type="number" min="0.1" step="0.1" value="1">
+                    <input class="b-bottom p-3-quarters us-none flex o-center v-center text-center" name="foodQuantityInput" id="foodQuantityInput" type="number" min="0.1" step="0.1" value="1">
                 </div>
             </div>
             <div class="form-row w-100 p-v-2 p-o-1 flex o-center v-center column">

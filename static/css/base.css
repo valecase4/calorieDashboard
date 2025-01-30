@@ -69,6 +69,14 @@
     width: 66%;
 }
 
+.w-80 {
+    width: 80%;
+}
+
+.w-90 {
+    width: 90%;
+}
+
 .w-100 {
     width: 100%;
 }
@@ -137,6 +145,10 @@
 
 .text-center {
     text-align: center;
+}
+
+.text-right {
+    text-align: right;
 }
 
 /* DISPLAY */
@@ -254,6 +266,16 @@
 .p-o-2 {
     padding-left: 2rem;
     padding-right: 2rem;
+}
+
+.p-o-5 {
+    padding-left: 5rem;
+    padding-right: 5rem;
+}
+
+.p-o-8 {
+    padding-left: 8rem;
+    padding-right: 8rem;
 }
 
 .p-v-1 {

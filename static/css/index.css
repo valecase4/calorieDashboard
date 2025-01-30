@@ -93,6 +93,10 @@ input[type="submit"] {
     cursor: pointer;
 }
 
+input[type="submit"].delete-btn {
+    background: red;
+}
+
 .form-container input, select {
     outline: none;
 }

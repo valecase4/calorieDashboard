@@ -45,9 +45,16 @@ foodNameInput.addEventListener("input", function() {
     suggestionDiv.innerHTML = ''
     suggestionDiv.classList.remove("disp-none")
 
+    if (currentInput.length === 0) {
+        suggestionDiv.classList.add("disp-none")
+    }
+
     fetch(`/api/suggest-foods/${currentInput}`)
         .then(response => response.json())
         .then(data => {
+            if (data.length === 0) {
+                suggestionDiv.classList.add("disp-none")
+            }
             data.forEach(item => {
                 // Create a suggestion item
                 const suggestionItem = document.createElement('div');
@@ -58,9 +65,24 @@ foodNameInput.addEventListener("input", function() {
                     foodNameInput.value = item[1];
                     suggestionDiv.innerHTML = '';
                     suggestionDiv.classList.add("disp-none")
+
+                    console.log(foodNameInput.value)
                 });
 
                 suggestionDiv.appendChild(suggestionItem);
             })
         })
+})
+
+// Form to add a new food
+const newFoodForm = document.getElementById("newFoodForm")
+
+newFoodForm.addEventListener("submit", (e) => {
+    const foodNameValue = foodNameInput.value 
+
+    if (foodNameValue.length === 0) {
+        e.preventDefault()
+        alert("Inserire un alimento valido.")
+    }
+    console.log(foodNameValue)
 })

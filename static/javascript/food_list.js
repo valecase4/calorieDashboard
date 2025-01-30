@@ -25,7 +25,26 @@ function getFoodList() {
                 } 
 
                 const lastItemColumn = document.createElement("div")
-                lastItemColumn.classList.add("w-12", "b-bottom", "flex", "p-v-1")
+                lastItemColumn.classList.add("w-12", "b-bottom", "flex", "p-v-1", "o-center", "v-center")
+
+                const deleteForm = document.createElement("form")
+                const foodIdInput = document.createElement("input")
+                const deleteFoodBtn = document.createElement("input")
+
+                deleteFoodBtn.classList.add("delete-btn")
+                deleteFoodBtn.classList.add("b-none", "p-1", "bold", "br-default")
+                
+                foodIdInput.type = "hidden"
+                foodIdInput.value = key
+                deleteFoodBtn.type = "submit"
+                deleteFoodBtn.value = "D"
+
+                deleteForm.appendChild(deleteFoodBtn)
+
+                deleteForm.method = "POST"
+                deleteForm.action = `/delete/${key}`
+
+                lastItemColumn.appendChild(deleteForm)  
 
                 itemDiv.appendChild(lastItemColumn)
 

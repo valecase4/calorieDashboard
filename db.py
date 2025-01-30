@@ -161,7 +161,7 @@ class BackendDB:
 
         query = """
         SELECT 
-            food_values.id, foods.name, food_values.calories, food_values.proteins, food_values.carbs, food_values.sugars, food_values.fats, food_values.saturated_fats
+            foods.id, foods.name, food_values.calories, food_values.proteins, food_values.carbs, food_values.sugars, food_values.fats, food_values.saturated_fats
         FROM 
             food_values
         INNER JOIN
@@ -192,6 +192,147 @@ class BackendDB:
         self.conn.commit()
         cursor.close()
         return result
+    
+    def enter_food_name(self, food_name):
+        """
+        Insert a new entry into foods table
+        """
+        cursor = self.conn.cursor()
+
+        query = f"""
+        INSERT INTO foods (name)
+        VALUES 
+        ('{food_name}')
+        """
+
+        cursor.execute(query)
+        self.conn.commit()
+        cursor.close()
+
+    def enter_food_values(self, food_id, calories, proteins, carbs, sugars, fats, saturated_fats):
+        """
+        Insert nutritional values of a food into food_values table
+        """
+        cursor = self.conn.cursor()
+
+        query = f"""
+        INSERT INTO food_values (food_id, calories, proteins, carbs, sugars, fats, saturated_fats)
+        VALUES 
+        ({food_id}, {calories}, {proteins}, {carbs}, {sugars}, {fats}, {saturated_fats})
+        """
+
+        cursor.execute(query)
+        self.conn.commit()
+        cursor.close()
+    
+    def get_food_id_by_food_name(self, food_name):
+        """
+        Return the food id of a given food name
+        """
+        cursor = self.conn.cursor()
+
+        query = f"""
+        SELECT id
+        FROM foods
+        WHERE name = '{food_name}'
+        """
+
+        cursor.execute(query)
+        result = cursor.fetchone()
+        self.conn.commit()
+        cursor.close()
+        return result
+
+    def enter_meal_entry(self, food_id, quantity, meal_id, date):
+        """
+        Insert a new entry into meal_entries table
+        """
+        cursor = self.conn.cursor()
+
+        query = f"""
+        INSERT INTO meal_entries (food_id, quantity, meal_id, date)
+        VALUES 
+        ({food_id}, {quantity}, {meal_id}, '{date}')
+        """
+
+        cursor.execute(query)
+        self.conn.commit()
+        cursor.close()
+
+    def get_all_meal_entries(self, date):
+        """
+        Get all meal entries for a specific date
+        """
+        cursor = self.conn.cursor()
+
+        query = f"""
+        SELECT 
+            f.name,
+            me.quantity,
+            me.meal_id,
+            me.date,
+            me.entry_id
+        FROM 
+            meal_entries AS me
+        INNER JOIN
+            foods AS f ON me.food_id = f.id
+        WHERE me.date = '{date}'
+        """
+
+        cursor.execute(query)
+        results = cursor.fetchall()
+        self.conn.commit()
+        cursor.close()
+        return results
+    
+    def delete_food_from_foods(self, food_id):
+        """
+        Delete a food from foods table
+        """
+        cursor = self.conn.cursor()
+        print("Executed")
+
+        query = f"""
+        DELETE 
+        FROM foods
+        WHERE id = {food_id}
+        """
+
+        cursor.execute(query)
+        self.conn.commit()
+        cursor.close()
+
+    def delete_meal_entry(self, entry_id):
+        """
+        Delete a meal entry
+        """
+        cursor = self.conn.cursor()
+
+        query =f"""
+        DELETE 
+        FROM meal_entries
+        WHERE entry_id = {entry_id}
+        """
+
+        cursor.execute(query)
+        self.conn.commit()
+        cursor.close()
+    
+    def delete_food_from_food_values(self, food_id):
+        """
+        Delete a food from food values table
+        """
+        cursor = self.conn.cursor()
+
+        query = f"""
+        DELETE 
+        FROM food_values
+        WHERE id = {food_id}
+        """
+
+        cursor.execute(query)
+        self.conn.commit()
+        cursor.close()
     
     def get_similar_foods_names(self, substring):
         """

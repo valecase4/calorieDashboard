@@ -47,14 +47,36 @@ def login():
 
     return render_template("login.html", error=error)
 
+#-----------------------------------------------------------------------------------------------------------------------
+# HOMEPAGE ROUTE
+
 @app.route(r"/<regex('\d{2}-\d{2}-\d{4}'):date>", methods=['GET', 'POST'])
 def index(date):
     # Convert date to italian format
     date_obj = datetime.strptime(date, "%d-%m-%Y").strftime("%d-%m-%Y")
 
     all_meals = backend_db.get_all_meals()
+    all_meal_entries_for_current_date = backend_db.get_all_meal_entries(date)
 
-    return render_template("index.html", all_meals=all_meals, date_obj=date_obj)
+    if request.method == 'POST':
+        food_name_input = request.form.get("foodNameInput")
+        try:
+            food_id = backend_db.get_food_id_by_food_name(food_name_input)[0]
+
+            if food_id:
+                food_quantity = request.form.get("foodQuantityInput")
+                meal_id = request.form.get("mealNameInput")
+                backend_db.enter_meal_entry(
+                    food_id, 
+                    food_quantity,
+                    meal_id,
+                    date
+                )
+                return redirect(url_for('index', date=date))
+        except:
+            return redirect(url_for("new_food", food_name=food_name_input))
+
+    return render_template("index.html", all_meals=all_meals, date_obj=date_obj, all_meal_entries_for_current_date=all_meal_entries_for_current_date)
 
 #-----------------------------------------------------------------------------------------------------------------------
 # USER DASHBOARD
@@ -68,6 +90,47 @@ def user_dashboard():
 @app.route("/food-list", methods=['GET', 'POST'])
 def food_list():
     return render_template("food_list.html")
+
+#------------------------------------------------------------------------------------------------------------------------
+
+@app.route("/delete/<int:food_id>", methods=['GET', 'POST'])
+def delete_food(food_id):
+    """
+    Delete from food values table
+    """
+    print("Executed")
+
+    backend_db.delete_food_from_foods(food_id)
+    return redirect(url_for("index", date=get_current_date()))
+
+@app.route("/delete-meal-entry/<int:entry_id>", methods=['GET', 'POST'])
+def delete_meal_entry(entry_id):
+    """
+    Delete a meal entry
+    """
+    backend_db.delete_meal_entry(entry_id)
+    return redirect(url_for("index", date=get_current_date()))
+
+#-----------------------------------------------------------------------------------------------------------------------
+
+@app.route("/new_food/<food_name>", methods=['GET', 'POST'])
+def new_food(food_name):
+    if request.method == 'POST':
+        backend_db.enter_food_name(food_name)
+
+        calories = request.form.get("caloriesInput")
+        proteins = request.form.get("proteinsInput")
+        carbs = request.form.get("carbsInput")
+        sugars = request.form.get("sugarsInput")
+        fats = request.form.get("fatsInput")
+        saturated_fats = request.form.get("saturatedFatsInput")
+
+        food_id = backend_db.get_food_id_by_food_name(food_name)[0]
+
+        backend_db.enter_food_values(food_id, calories, proteins, carbs, sugars, fats, saturated_fats)
+
+        return redirect(url_for("index", date=get_current_date()))
+    return render_template("new_food.html", food_name=food_name)
 
 #------------------------------------------------------------------------------------------------------------------------
 

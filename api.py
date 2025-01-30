@@ -6,7 +6,8 @@ from datetime import datetime
 api_routes = Blueprint('api_routes', __name__, url_prefix='/api')
 backend_db = BackendDB("host='localhost' dbname='tracciamentoCalorie' user='postgres' password='root'")
 
-# 
+# API Route for getting all meal_entries based on date and meal
+
 @api_routes.route('/best-five-foods', methods=['GET', 'POST'])
 def best_five_foods():
     return 

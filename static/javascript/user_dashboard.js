@@ -261,6 +261,7 @@ function getBestFoodsPerWeekDay (weekDay) {
             bestFiveFoodsPerWeekDayDiv.innerHTML = ''
 
             if (Object.keys(data).length === 0) {
+                bestFiveFoodsPerWeekDayDiv.classList.add("p-1")
                 bestFiveFoodsPerWeekDayDiv.innerHTML = '<p>Non ho trovato alcun risultato per il giorno inserito.</p>'
             } else {
                 for (let i=0; i<5; i++) {
@@ -750,11 +751,16 @@ async function graphBasedOnInput() {
 }
 
 nutrientToMakePlot.addEventListener("input", async () => {
+    const defaultParagraph = document.getElementById("defaultParagraph")
+    defaultParagraph.classList.add("disp-none")
     const output = await graphBasedOnInput()   
     displayGraph(output)
 })
 
 intervalDaysToMakePlot.addEventListener("input", async () => {
+    const defaultParagraph = document.getElementById("defaultParagraph")
+    defaultParagraph.classList.add("disp-none")
+
     const output = await graphBasedOnInput() 
     displayGraph(output)   
 })

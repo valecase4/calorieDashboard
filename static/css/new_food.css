@@ -1,0 +1,17 @@
+.container {
+    background-color: white;
+}
+
+input {
+    outline: none;
+}
+
+input[type="submit"] {
+    background: var(--secondary-color);
+    color: white;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background: var(--primary-color);
+}

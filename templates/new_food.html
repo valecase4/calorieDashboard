@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}
+    Nuovo Alimento
+{% endblock title %}
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/new_food.css') }}">
+{% endblock style %}
+{% block content %}
+    <div class="container w-50 p-2">
+        <form action="" method="POST">
+            <div class="row w-100 p-2 flex v-center o-center">
+                <input class="p-1 font-1-quarter" type="text" value="{{ food_name }}" disabled>
+            </div>
+            <div class="row-100 p-1 flex v-center space-between row">
+                <div class="w-50">
+                    <div class="w-100 h-50 flex o-center v-center bold p-1">Calorie per 100g</div>
+                    <div class="w-100 h-50 flex o-center v-center">
+                        <input class="p-1 font-1-quarter text-center" name="caloriesInput" type="number" value="1" min="0" step="0.1" max="9999">
+                    </div>
+                </div>
+                <div class="w-50">
+                    <div class="w-100 h-50 flex o-center v-center bold p-1">Proteine per 100g</div>
+                    <div class="w-100 h-50 flex o-center v-center">
+                        <input class="p-1 font-1-quarter text-center" name="proteinsInput" type="number" value="1" min="0" step="0.1" max="9999">
+                    </div>
+                </div>
+            </div>
+            <div class="row-100 p-1 flex v-center space-between row">
+                <div class="w-50">
+                    <div class="w-100 h-50 flex o-center v-center bold p-1">Carboidrati per 100g</div>
+                    <div class="w-100 h-50 flex o-center v-center">
+                        <input class="p-1 font-1-quarter text-center" name="carbsInput" type="number" value="1" min="0" step="0.1" max="9999">
+                    </div>
+                </div>
+                <div class="w-50">
+                    <div class="w-100 h-50 flex o-center v-center bold p-1">Zuccheri per 100g</div>
+                    <div class="w-100 h-50 flex o-center v-center">
+                        <input class="p-1 font-1-quarter text-center" name="sugarsInput" type="number" value="1" min="0" step="0.1" max="9999">
+                    </div>
+                </div>
+            </div>
+            <div class="row-100 p-1 flex v-center space-between row">
+                <div class="w-50">
+                    <div class="w-100 h-50 flex o-center v-center bold p-1">Grassi per 100g</div>
+                    <div class="w-100 h-50 flex o-center v-center">
+                        <input class="p-1 font-1-quarter text-center" name="fatsInput" type="number" value="1" min="0" step="0.1" max="9999">
+                    </div>
+                </div>
+                <div class="w-50">
+                    <div class="w-100 h-50 flex o-center v-center bold p-1">Grassi Saturi per 100g</div>
+                    <div class="w-100 h-50 flex o-center v-center">
+                        <input class="p-1 font-1-quarter text-center" name="saturatedFatsInput" type="number" value="1" min="0" step="0.1" max="9999">
+                    </div>
+                </div>
+            </div>
+            <div class="p-1 flex o-center v-center w-100">
+                <input class="b-none font-1-quarter p-1" type="submit" value="Salva Alimento">
+            </div>
+        </form>
+    </div>
+{% endblock content %}

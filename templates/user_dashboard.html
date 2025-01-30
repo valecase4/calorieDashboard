@@ -130,7 +130,8 @@
                 </div>
                 <div class="w-100 h-90 b-default flex column">
                     <div class="w-100 h-10 flex o-center v-center" style="background: white;">
-                        <select name="" class="b-none flex o-center v-center" id="nutrientToMakePlot">
+                        <select name="" class="b-none flex o-center v-center text-center" id="nutrientToMakePlot">
+                            <option value="--">--</option>
                             <option value="calorie">Calorie</option>
                             <option value="proteine">Proteine</option>
                             <option value="grassi">Grassi</option>
@@ -138,12 +139,16 @@
                             <option value="grassi_saturi">Grassi Saturi</option>
                             <option value="carboidrati">Carboidrati</option>
                         </select>
-                        <select class="b-none flex o-center v-center" id="intervalDaysToMakePlot">
+                        <select class="b-none flex o-center v-center text-center" id="intervalDaysToMakePlot">
+                            <option value="--">--</option>
                             <option value="last_seven">Ultimi 7 giorni</option>
                             <option value="last_thirty">Ultimi 30 giorni</option>
                         </select>
                     </div>
-                    <div class="w-100 h-90 flex v-center">
+                    <div class="w-100 h-90 flex v-center column">
+                        <div class="w-100 h-100 flex-o-center v-center p-1" id="defaultParagraph">
+                            Seleziona il Macronutriente e il Periodo di Analisi.
+                        </div>
                         <canvas id="globalTrendsGraph"></canvas>
                     </div>
                 </div>
