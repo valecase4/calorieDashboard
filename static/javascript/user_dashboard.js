@@ -525,29 +525,37 @@ function getGoalDescription () {
     fetch("http://127.0.0.1:5000/api/all-goals")
         .then(response => response.json())
         .then(data => {
-            // First paragraph
-            let goalDescriptionContent = `<p>I tuoi obbiettivi principali riguardano: <br><br></p>`
+            if (data.length > 0) {
+                // First paragraph
+                let goalDescriptionContent = `<p>I tuoi obbiettivi principali riguardano: <br><br></p>`
 
-            data.forEach(goal => {
-                const setGoalListItemContent = `
-                    &#x2022; &nbsp;<b>${goal.macro.toUpperCase()}</b>: Qui il valore ideale è stato fissato a <b>${goal.valoreIdeale}${goal.macro === 'calorie' ? 'kcal' : 'g'}</b> per giorno.
-                    ${
-                        goal.regola === 'entro_range' ? `Per questo macronutriente, il valore minimo da raggiungere è <b>${goal.valoreMinimo}${goal.macro === 'calorie' ? 'kcal' : 'g'}</b> per giorno.
-                        Il valore massimo, invece è stato settato a <b>${goal.valoreMassimo}${goal.macro === 'calorie' ? 'kcal' : 'g'}</b> per giorno.` 
-                        : `Ti sei prefissato di raggiungere da <b>${goal.valoreMinimo}${goal.macro === 'calorie' ? 'kcal' : 'g'}</b> per giorno in su.`
-                    }
-                    <br>
-                    <br>
-                `
-                goalDescriptionContent = goalDescriptionContent + setGoalListItemContent
+                data.forEach(goal => {
+                    const setGoalListItemContent = `
+                        &#x2022; &nbsp;<b>${goal.macro.toUpperCase()}</b>: Qui il valore ideale è stato fissato a <b>${goal.valoreIdeale}${goal.macro === 'calorie' ? 'kcal' : 'g'}</b> per giorno.
+                        ${
+                            goal.regola === 'entro_range' ? `Per questo macronutriente, il valore minimo da raggiungere è <b>${goal.valoreMinimo}${goal.macro === 'calorie' ? 'kcal' : 'g'}</b> per giorno.
+                            Il valore massimo, invece è stato settato a <b>${goal.valoreMassimo}${goal.macro === 'calorie' ? 'kcal' : 'g'}</b> per giorno.` 
+                            : `Ti sei prefissato di raggiungere da <b>${goal.valoreMinimo}${goal.macro === 'calorie' ? 'kcal' : 'g'}</b> per giorno in su.`
+                        }
+                        <br>
+                        <br>
+                    `
+                    goalDescriptionContent = goalDescriptionContent + setGoalListItemContent
+                })
+
+                // Last parragraph
+                const lastParagraphGoalDescription = '<p>Vediamo come ti sei comportato rispetto ai tuoi obbiettivi.</p>'
+                goalDescriptionContent = goalDescriptionContent + lastParagraphGoalDescription
+
+                goalDescriptionDiv.innerHTML = goalDescriptionContent
+
+                openSetGoalInsightsBtn.disabled = false
+            } else {
+                let goalDescriptionContent = `<p>Non hai settato alcun obbiettivo.<br><br></p>`
+                goalDescriptionDiv.innerHTML = goalDescriptionContent
+                openSetGoalInsightsBtn.disabled = true
+            }
             })
-
-            // Last parragraph
-            const lastParagraphGoalDescription = '<p>Vediamo come ti sei comportato rispetto ai tuoi obbiettivi.</p>'
-            goalDescriptionContent = goalDescriptionContent + lastParagraphGoalDescription
-
-            goalDescriptionDiv.innerHTML = goalDescriptionContent
-        })
 }
 
 // API Call
@@ -651,14 +659,21 @@ function displayInfo() {
             let firstParagraph;
             const howManyPerfectDays = perfectDays.length
 
-            if (howManyPerfectDays === 0) {
-                firstParagraph = '<p>Negli ultimi 7 giorni, in <u>nessun giorno</u> sei stato in grado di raggiungere tutti i macro prefissati.</p><br><br>'
-            } else {
-                firstParagraph = `<p>Hai raggiunto tutti i macro prefissati per <b>${howManyPerfectDays} giorni</b> degli ultimi 7.</p><br><br>`
-            }
 
-            setGoalsInsightsDivContent = setGoalsInsightsDivContent + firstParagraph
-            setGoalsInsightsDiv.innerHTML = setGoalsInsightsDivContent
+            fetch("http://127.0.0.1:5000/api/last-seven-dates")
+                .then(response => response.json())
+                .then(data => {
+                    const numberDays = data.length
+
+                    if (howManyPerfectDays === 0) {
+                        firstParagraph = `<p>Negli ultimi ${numberDays} giorni, in <u>nessun giorno</u> sei stato in grado di raggiungere tutti i macro prefissati.</p><br><br>`
+                    } else {
+                        firstParagraph = `<p>Hai raggiunto tutti i macro prefissati per <b>${howManyPerfectDays} giorni</b> degli ultimi ${numberDays}.</p><br><br>`
+                    }
+        
+                    setGoalsInsightsDivContent = setGoalsInsightsDivContent + firstParagraph
+                    setGoalsInsightsDiv.innerHTML = setGoalsInsightsDivContent
+                })
         }
         
     )
@@ -670,14 +685,20 @@ function displayInfo() {
                     let firstParagraph;
                     const howManyPerfectDays = perfectDays.length
 
-                    if (howManyPerfectDays === 0) {
-                        firstParagraph = `<p>Negli ultimi 7 giorni, in <u>nessun giorno</u> sei stato in grado di rispettare il <b>fabbisogno di ${goal.macro}</b>.</p><br><br>`
-                    } else {
-                        firstParagraph = `<p>Hai rispettato il <b>fabbisogno di ${goal.macro}</b> per <b>${howManyPerfectDays} giorni</b> degli ultimi 7.</p><br><br>`
-                    }
+                    fetch("http://127.0.0.1:5000/api/last-seven-dates")
+                        .then(response => response.json())
+                        .then(data => {
+                            const numberDays = data.length
 
-                    setGoalsInsightsDivContent = setGoalsInsightsDivContent + firstParagraph
-                    setGoalsInsightsDiv.innerHTML = setGoalsInsightsDivContent
+                            if (howManyPerfectDays === 0) {
+                                firstParagraph = `<p>Negli ultimi ${numberDays} giorni, in <u>nessun giorno</u> sei stato in grado di rispettare il <b>fabbisogno di ${goal.macro}</b>.</p><br><br>`
+                            } else {
+                                firstParagraph = `<p>Hai rispettato il <b>fabbisogno di ${goal.macro}</b> per <b>${howManyPerfectDays} giorni</b> degli ultimi ${numberDays}.</p><br><br>`
+                            }
+        
+                            setGoalsInsightsDivContent = setGoalsInsightsDivContent + firstParagraph
+                            setGoalsInsightsDiv.innerHTML = setGoalsInsightsDivContent
+                        })
                 }
             )
         })
